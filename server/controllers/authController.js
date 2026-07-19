@@ -16,8 +16,7 @@ exports.register = async (req, res) => {
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ message: 'User already exists' });
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         user = await User.create({
             name,
@@ -29,7 +28,8 @@ exports.register = async (req, res) => {
 
         const otp = generateOTP();
         await OTP.create({ email, otp, action: 'account_verification' });
-        await sendOTPEmail(email, otp, 'account_verification');
+        sendOTPEmail(email, otp, 'account_verification')
+            .catch(err => console.error(err));
 
         res.status(201).json({
             message: 'OTP sent to email. Please verify.',
@@ -53,8 +53,14 @@ exports.login = async (req, res) => {
             const otp = generateOTP();
             await OTP.findOneAndDelete({ email: user.email, action: 'account_verification' });
             await OTP.create({ email: user.email, otp, action: 'account_verification' });
-            await sendOTPEmail(user.email, otp, 'account_verification');
-            return res.status(403).json({ message: 'Account not verified', needsVerification: true, email: user.email });
+            sendOTPEmail(user.email, otp, 'account_verification')
+                .catch(err => console.error(err));
+
+            return res.status(403).json({
+                message: 'Account not verified',
+                needsVerification: true,
+                email: user.email
+            });
         }
 
         res.json({

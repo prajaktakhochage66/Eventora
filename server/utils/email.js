@@ -5,9 +5,21 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    pool: true,
+    maxConnections: 5,
+    maxMessages: Infinity,
+
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+    }
+});
+
+transporter.verify((error) => {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log("SMTP Server Ready");
     }
 });
 
