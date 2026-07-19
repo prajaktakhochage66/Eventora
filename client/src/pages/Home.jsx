@@ -130,7 +130,7 @@ const Home = () => {
 
             {/* Hero Section */}
 
-            <div className="relative bg-black text-white rounded-3xl overflow-hidden mb-12 shadow-2xl">
+            <div className="relative bg-black text-white rounded-3xl overflow-visible mb-40 shadow-2xl z-50">
 
                 <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=3000&auto=format&fit=crop')] bg-cover bg-center"></div>
 
@@ -194,7 +194,7 @@ const Home = () => {
                         {showSuggestions &&
                             suggestions.length > 0 && (
 
-                                <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl overflow-hidden z-50">
+                                <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-[9999]">
 
                                     {suggestions.map((event) => (
 
@@ -269,7 +269,7 @@ const Home = () => {
             </div>
                         {/* Why Choose Us / Features */}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 px-4">
+            <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 px-4">
 
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:-translate-y-1 transition duration-300">
 
