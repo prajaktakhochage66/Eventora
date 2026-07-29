@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
     secure: true,
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        pass: process.env.EMAIL_PASS, // Ensure this is a 16-character App Password, not a standard password
     },
     connectionTimeout: 10000,
     greetingTimeout: 10000,
@@ -40,6 +40,7 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
         console.log('Email sent successfully to', userEmail);
     } catch (error) {
         console.error('Error sending email:', error);
+        throw new Error('Failed to send booking confirmation email'); // ADDED: Throw error upwards
     }
 };
 
@@ -69,6 +70,7 @@ const sendOTPEmail = async (userEmail, otp, type) => {
         console.log(`OTP sent to ${userEmail} for ${type}`);
     } catch (error) {
         console.error('Error sending OTP email:', error);
+        throw new Error('Failed to send OTP email'); // ADDED: Throw error upwards so the controller catches it
     }
 };
 

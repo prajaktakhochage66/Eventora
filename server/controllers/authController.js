@@ -28,14 +28,16 @@ exports.register = async (req, res) => {
 
         const otp = generateOTP();
         await OTP.create({ email, otp, action: 'account_verification' });
-        sendOTPEmail(email, otp, 'account_verification')
-            .catch(err => console.error(err));
+        
+        // ADDED: await to ensure the email sends before sending the response
+        await sendOTPEmail(email, otp, 'account_verification');
 
         res.status(201).json({
             message: 'OTP sent to email. Please verify.',
             email: user.email
         });
     } catch (error) {
+        // Now if the email fails, the user will actually get this 500 error
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
@@ -53,8 +55,9 @@ exports.login = async (req, res) => {
             const otp = generateOTP();
             await OTP.findOneAndDelete({ email: user.email, action: 'account_verification' });
             await OTP.create({ email: user.email, otp, action: 'account_verification' });
-            sendOTPEmail(user.email, otp, 'account_verification')
-                .catch(err => console.error(err));
+            
+            // ADDED: await to ensure the email sends
+            await sendOTPEmail(user.email, otp, 'account_verification');
 
             return res.status(403).json({
                 message: 'Account not verified',
