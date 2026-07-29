@@ -5,11 +5,11 @@ dotenv.config();
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true, 
+    port: 587, // Changed from 465
+    secure: false, // Must be false for port 587 (Nodemailer will automatically upgrade the connection to secure)
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Ensure this is a 16-character App Password, not a standard password
+        pass: process.env.EMAIL_PASS, 
     },
     connectionTimeout: 10000,
     greetingTimeout: 10000,
