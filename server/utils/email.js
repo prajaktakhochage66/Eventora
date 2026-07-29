@@ -40,7 +40,7 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
         console.log('Email sent successfully to', userEmail);
     } catch (error) {
         console.error('Error sending email:', error);
-        throw new Error('Failed to send booking confirmation email'); // ADDED: Throw error upwards
+        throw new Error('Failed to send booking confirmation email'); // Throw error upwards
     }
 };
 
@@ -70,7 +70,7 @@ const sendOTPEmail = async (userEmail, otp, type) => {
         console.log(`OTP sent to ${userEmail} for ${type}`);
     } catch (error) {
         console.error('Error sending OTP email:', error);
-        throw new Error('Failed to send OTP email'); // ADDED: Throw error upwards so the controller catches it
+        throw new Error('Failed to send OTP email'); // Throw error upwards so the controller catches it
     }
 };
 
