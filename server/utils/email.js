@@ -5,26 +5,45 @@ dotenv.config();
 // Helper function to send emails via Brevo's HTTP API
 const sendEmailViaBrevo = async (toEmail, subject, htmlContent) => {
     const url = 'https://api.brevo.com/v3/smtp/email';
+    
+    // Construct the specific payload required by Brevo v3 API
+    const payload = {
+        sender: {
+            name: "Eventora",
+            email: process.env.BREVO_SENDER_EMAIL
+        },
+        to: [
+            {
+                email: toEmail
+            }
+        ],
+        subject: subject,
+        htmlContent: htmlContent
+    };
+
     const options = {
         method: 'POST',
         headers: {
             'accept': 'application/json',
-            'content-type': 'application/json',
-            'api-key': process.env.BREVO_API_KEY
+            'api-key': process.env.BREVO_API_KEY,
+            'content-type': 'application/json'
         },
-        body: JSON.stringify({
-            sender: { email: process.env.BREVO_SENDER_EMAIL, name: 'Eventora' },
-            to: [{ email: toEmail }],
-            subject: subject,
-            htmlContent: htmlContent
-        })
+        body: JSON.stringify(payload)
     };
 
-    const response = await fetch(url, options);
-    if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Brevo API Error:', errorData);
-        throw new Error('Email sending failed at API level');
+    try {
+        const response = await fetch(url, options);
+        
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('Brevo API Error Details:', errorData);
+            throw new Error(`Email sending failed at API level: ${response.status} ${response.statusText}`);
+        }
+        
+        console.log(`Successfully sent email to ${toEmail}`);
+    } catch (error) {
+        console.error('Fetch Error when calling Brevo:', error);
+        throw error;
     }
 };
 
@@ -38,9 +57,8 @@ const sendBookingEmail = async (userEmail, userName, eventTitle) => {
         </div>
       `;
         await sendEmailViaBrevo(userEmail, `Booking Confirmed: ${eventTitle}`, html);
-        console.log('Email sent successfully to', userEmail);
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error in sendBookingEmail:', error);
         throw new Error('Failed to send booking confirmation email');
     }
 };
@@ -63,9 +81,8 @@ const sendOTPEmail = async (userEmail, otp, type) => {
             </div>
         `;
         await sendEmailViaBrevo(userEmail, title, html);
-        console.log(`OTP sent to ${userEmail} for ${type}`);
     } catch (error) {
-        console.error('Error sending OTP email:', error);
+        console.error('Error in sendOTPEmail:', error);
         throw new Error('Failed to send OTP email');
     }
 };
